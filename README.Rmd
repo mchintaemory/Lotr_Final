@@ -1,0 +1,16 @@
+---
+title: "README"
+author: "Mirra Chinta"
+date: "2025-11-19"
+output: html_document
+---
+
+#Code1
+Code1 includes code for data cleaning the LOTR characters data and devleoping a table 1 using 
+gtsummary.
+
+#Code2
+Code2 includes code to make a figure of the distribution of LOTR characters
+
+#Rendering
+Use code to render report
