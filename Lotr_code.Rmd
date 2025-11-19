@@ -10,55 +10,32 @@ The "Lord of the Rings" characters dataset from Kaggle contains character descri
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(readr)
 library(dplyr)
+library(stringr)
 library(gtsummary)
+library(ggplot2)
 ```
 # **Loading data** 
-```{r}
-
+```{r, here-i-am, include = FALSE}
+here::i_am(
+  "Lotr_code.Rmd"
+)
 lotr<- read.csv("lotr_characters.csv")
-
 ```
 
 # **Table** 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-#data cleaning
-library(stringr)
-lotr <- lotr %>%
-  mutate(
-    gender = str_to_lower(gender),
-    gender = if_else(str_detect(gender, "male"), "Male",
-                     if_else(str_detect(gender, "female"), "Female", NA_character_))
-  )
 
-table_LOTR_Race <- lotr |>
-  select("race", "gender") |>
-  tbl_summary(
-    by = race,
-    include = gender,
-    missing= "no",
-    label = list(gender~"Gender")
-  ) |>
-   modify_spanning_header(
-    all_stat_cols() ~ "**Race**" 
-  ) %>%
-  add_overall() %>% 
-  modify_caption("**Gender distribution by Race**")
-  table_LOTR_Race
+here::here("output/table_LOTR_Race.rds")
+table_LOTR_Race
+
 ```
 # **Table Description** 
 This table contains the counts of characters for each race within the Lord of Rings Universe, as well as a the number of characters of each gender under each race with the percentage distribution. The races with the highest character counts include the Ainur, Elves, Hobbits, and Men. All races with LOTR characters are predominantly male as well.
 
 # **Figure**  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-library(ggplot2)
-ggplot(lotr, aes(x = race))+
-  geom_bar()+   # histogram of categorical variable = bar chart
-  labs(
-    title = "Distribution of Characters by Race",
-    x = "Race",
-    y = "Count"
-  )+
-  theme(axis.text.x = element_text(angle = 45))
+here::here("output/LOTR_Race_Dist")
+LOTR_Race_Dist
 ```
 
 # **Figure Description** 
