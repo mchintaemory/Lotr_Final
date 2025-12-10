@@ -1,18 +1,14 @@
+suppressPackageStartupMessages({
+  library(here)
+  library(rmarkdown)
+})
 
-lotr<- read.csv("lotr_characters.csv")
-here::i_am(
-  "code/code2.R"
-)
-LOTR_Race_Dist <- ggplot(lotr, aes(x = race))+
-  geom_bar()+   # histogram of categorical variable = bar chart
-  labs(
-    title = "Distribution of Characters by Race",
-    x = "Race",
-    y = "Count"
-  )+
-  theme(axis.text.x = element_text(angle = 45))
+# Set project root
+here::i_am("code/02_render_report.R")
 
-saveRDS(
-  LOTR_Race_Dist,
-  file = here::here("output", "LOTR_Race_dist.rds")
+# Render the Rmd in the report/ folder
+rmarkdown::render(
+  input       = here::here("report", "Lotr_code.Rmd"),
+  output_file = "report.html",
+  output_dir  = here::here()
 )

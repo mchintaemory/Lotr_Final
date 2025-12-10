@@ -1,14 +1,19 @@
+all: install report.html
+
 install:
 	Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv'); renv::restore()"
 
-report.html: LOTR_code.Rmd code/02_render_report.R LOTRtable
-	Rscript code/02_render_report.R
+report.html: report/Lotr_code.Rmd
+	Rscript -e "rmarkdown::render('report/Lotr_code.Rmd', output_file = 'report.html', output_dir = '.')"
 
-LOTRtable:
-	Rscript code/code1.R
-	Rscript code/code2.R
+dockerreport:
+	mkdir -p report
+	docker run --rm \
+		-v "$(pwd)/report:/project/report" \
+		lotrdock
 
 .PHONY: clean
 clean:
 	rm -f output/*.rds
-	rm -f LOTR_code.html
+	rm -f report.html
+	rm -f report/Lotr_code.html

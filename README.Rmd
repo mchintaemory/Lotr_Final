@@ -14,3 +14,9 @@ Code2 includes code to make a figure of the distribution of LOTR characters
 
 #Rendering
 Use code to render report
+
+#docker
+Use 'docker build -t lotrdock .' to build docker image from docker file. 
+Run 'docker run --rm -v "$(pwd)/report:/project/report" lotrdock' to run report on docker
+https://hub.docker.com/repository/docker/mchinta23/lotrdock/general
+

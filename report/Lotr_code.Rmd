@@ -1,0 +1,71 @@
+---
+title: "LOTR Analysis"
+author: "Mirra Chinta"
+date: "2025-10-01"
+output: html_document
+---
+
+# **Introduction**  
+The "Lord of the Rings" characters dataset from Kaggle contains character descriptions from Peter Jackson's Lord of the Rings trilogy. The following analysis will look at the number of characters within the Lord of the Rings' fictional races and gender breakdown across characters. The dataset contains 909 characters across various time periods within the Lord of the Rings universe.
+
+# **Loading data** 
+
+```{r, here-i-am, include = FALSE, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(stringr)
+library(gtsummary)
+library(ggplot2)
+library(here)
+
+here::i_am("report/Lotr_code.Rmd")
+
+lotr <- read_csv(here::here("lotr_characters.csv"), show_col_types = FALSE) |>
+  mutate(
+    gender = str_to_lower(gender),
+    gender = case_when(
+      str_detect(gender, "male")   ~ "Male",
+      str_detect(gender, "female") ~ "Female",
+      TRUE                         ~ NA_character_
+    )
+  )
+```
+
+
+# **Table** 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+table_LOTR_Race <- lotr |>
+  select(race, gender) |>
+  tbl_summary(
+    by      = race,
+    missing = "no",
+    label   = list(gender ~ "Gender")
+  ) |>
+  modify_spanning_header(all_stat_cols() ~ "**Race**") |>
+  add_overall() |>
+  modify_caption("**Gender distribution by Race**")
+
+table_LOTR_Race
+
+```
+# **Table Description** 
+This table contains the counts of characters for each race within the Lord of Rings Universe, as well as a the number of characters of each gender under each race with the percentage distribution. The races with the highest character counts include the Ainur, Elves, Hobbits, and Men. All races with LOTR characters are predominantly male as well.
+
+# **Figure**  
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+LOTR_Race_Dist <- lotr |>
+  count(race, name = "n") |>
+  ggplot(aes(x = reorder(race, n), y = n)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    x = "Race",
+    y = "Count",
+    title = "Distribution of LOTR Characters by Race"
+  )
+
+LOTR_Race_Dist
+```
+
+# **Figure Description** 
+This bar chart shows the discribution of race across Lord of The Rings characters. Across the horizontal axis, are the fictional races listed and across the y axis are counts.

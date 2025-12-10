@@ -1,31 +1,44 @@
-here::i_am(
-  "code/code1.R"
-)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(stringr)
+  library(gtsummary)
+  library(here)
+  library(readr)
+})
 
-lotr<- read.csv("lotr_characters.csv")
-lotr <- lotr %>%
+# set project root
+here::i_am("code/code1.R")
+
+# read data from project root
+lotr <- read_csv(here("lotr_characters.csv"))
+
+# build gtsummary table
+table_LOTR_Race <- lotr |>
   mutate(
     gender = str_to_lower(gender),
-    gender = if_else(str_detect(gender, "male"), "Male",
-                     if_else(str_detect(gender, "female"), "Female", NA_character_))
-  )
-
-table_LOTR_Race <- lotr |>
-  select("race", "gender") |>
-  tbl_summary(
-    by = race,
-    include = gender,
-    missing= "no",
-    label = list(gender~"Gender")
+    gender = case_when(
+      str_detect(gender, "male")   ~ "Male",
+      str_detect(gender, "female") ~ "Female",
+      TRUE                         ~ NA_character_
+    )
   ) |>
-  modify_spanning_header(
-    all_stat_cols() ~ "**Race**" 
-  ) %>%
-  add_overall() %>% 
+  select(race, gender) |>
+  tbl_summary(
+    by      = race,
+    missing = "no",
+    label   = list(gender ~ "Gender")
+  ) |>
+  modify_spanning_header(all_stat_cols() ~ "**Race**") |>
+  add_overall() |>
   modify_caption("**Gender distribution by Race**")
-table_LOTR_Race
 
+# ensure output dir exists
+dir.create(here("output"), showWarnings = FALSE)
+
+# save, do NOT print
 saveRDS(
   table_LOTR_Race,
-  file = here::here("output", "table_LOTR_Race.rds")
+  file = here("output/table_LOTR_Race.rds")
 )
+
+invisible(NULL)
